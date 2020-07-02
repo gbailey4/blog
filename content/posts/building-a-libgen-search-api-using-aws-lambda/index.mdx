@@ -12,11 +12,11 @@ slug: /building-a-libgen-search-api-using-aws-lambda
 
 #### Project Outline
 
-1. [ Create Lambda and API Gateway ](#1-create-lambda-and-api-gateway)
-2. [ Query LibGen for search term ](https://grahambailey.io#2-querying-libgen)
-3. [ Extract IDs from results page ](https://grahambailey.io#3-extract-ids)
-4. [ Use IDs to make LibGen API Request ](https://grahambailey.io#4-make-libgen-api-request)
-5. [ Do whatever you want with the API response ](https://grahambailey.io#5-use-the-api-response)
+1. Create Lambda and API Gateway
+2. Query LibGen for search term
+3. Extract IDs from results page
+4. Use IDs to make LibGen API Request
+5. Do whatever you want with the API response
 
 #### 1. Create Lambda and API Gateway
 
@@ -37,15 +37,15 @@ Simply replace the "SEARCH_TERM" piece with your search term and you've got a re
 Here's the code to get the HTTP response:
 
 ```javascript
-const axios = require('axios')
+const axios = require("axios");
 
-module.exports.lginfo = async event => {
-  const params = JSON.parse(event.body)
-  const { search } = params
+module.exports.lginfo = async (event) => {
+  const params = JSON.parse(event.body);
+  const { search } = params;
   const libgenScrape = await axios.get(
-    `http://libgen.is/search.php?req=${search}&lg_topic=libgen&open=0&view=simple&res=25&phrase=1&column=def`,
-  )
-}
+    `http://libgen.is/search.php?req=${search}&lg_topic=libgen&open=0&view=simple&res=25&phrase=1&column=def`
+  );
+};
 ```
 
 We're not returning anything yet, but you'll notice that we're getting the HTTP page via a Lambda API.
@@ -61,17 +61,17 @@ Now you've got your HTTP from the results page coming in from the axios.get comm
 Put it all together and we get a string of our IDs!
 
 ```javascript
-const axios = require('axios')
+const axios = require("axios");
 
-module.exports.lginfo = async event => {
-  const params = JSON.parse(event.body)
-  const { search } = params
+module.exports.lginfo = async (event) => {
+  const params = JSON.parse(event.body);
+  const { search } = params;
   const libgenScrape = await axios.get(
-    `http://libgen.is/search.php?req=${search}&lg_topic=libgen&open=0&view=simple&res=100&phrase=1&column=def`,
-  )
-  const regex = /(?<=view.php?id=)[0-9][^']*/g
-  const allIds = libgenScrape.data.match(regex)
-}
+    `http://libgen.is/search.php?req=${search}&lg_topic=libgen&open=0&view=simple&res=100&phrase=1&column=def`
+  );
+  const regex = /(?<=view.php?id=)[0-9][^']*/g;
+  const allIds = libgenScrape.data.match(regex);
+};
 ```
 
 #### 4. Make LibGen API Request
@@ -79,22 +79,21 @@ module.exports.lginfo = async event => {
 Now we've got all the pieces together to make a request to LibGen! This is the fun part. First we need to get our IDs that you got in the last step in allIds as a string. Then we make a second request to LibGen this time as a real API request using the string of IDs.
 
 ```javascript
-const axios = require('axios')
+const axios = require("axios");
 
-module.exports.lginfo = async event => {
-  const params = JSON.parse(event.body)
-  const { search } = params
+module.exports.lginfo = async (event) => {
+  const params = JSON.parse(event.body);
+  const { search } = params;
   const libgenScrape = await axios.get(
-    `http://libgen.is/search.php?req=${search}&lg_topic=libgen&open=0&view=simple&res=100&phrase=1&column=def`,
-  )
-  const regex = /(?<=view.php?id=)[0-9][^']*/g
-  const allIds = libgenScrape.data.match(regex)
-  const idRequestString = allIds.toString()
+    `http://libgen.is/search.php?req=${search}&lg_topic=libgen&open=0&view=simple&res=100&phrase=1&column=def`
+  );
+  const regex = /(?<=view.php?id=)[0-9][^']*/g;
+  const allIds = libgenScrape.data.match(regex);
+  const idRequestString = allIds.toString();
   const libgenApiResponse = await axios.get(
-    `http://libgen.is/json.php?ids=${idRequestString}&lg_topic=libgen&fields=title,author,year,extension,md5,edition,pages,language,filesize,coverurl`,
-  )
-
-}
+    `http://libgen.is/json.php?ids=${idRequestString}&lg_topic=libgen&fields=title,author,year,extension,md5,edition,pages,language,filesize,coverurl`
+  );
+};
 ```
 
 In the code above, in the libgenApiResponse, we've got our response from LibGen! Again, we're using Axios to make the call. We take the stringified list of IDs and put that in the request. You can customize what LibGen returns to you, and you can see pretty clearly what I'm asking for in my request. View their [ documentation ](http://libgen.is/json.php) for more details on that.
@@ -104,29 +103,29 @@ In the code above, in the libgenApiResponse, we've got our response from LibGen!
 Now that you've got the API response from LibGen, you can do whatever you'd like with it! I'll simply return the response in my Lambda so that I've got an easy to use search API on top of LibGen with an endpoint accepting a search query.
 
 ```javascript
-const axios = require('axios')
+const axios = require("axios");
 
-module.exports.lginfo = async event => {
-  const params = JSON.parse(event.body)
-  const { search } = params
+module.exports.lginfo = async (event) => {
+  const params = JSON.parse(event.body);
+  const { search } = params;
   const libgenScrape = await axios.get(
-    `http://libgen.is/search.php?req=${search}&lg_topic=libgen&open=0&view=simple&res=100&phrase=1&column=def`,
-  )
-  const regex = /(?<=view.php?id=)[0-9][^']*/g
-  const allIds = libgenScrape.data.match(regex)
-  const idRequestString = allIds.toString()
+    `http://libgen.is/search.php?req=${search}&lg_topic=libgen&open=0&view=simple&res=100&phrase=1&column=def`
+  );
+  const regex = /(?<=view.php?id=)[0-9][^']*/g;
+  const allIds = libgenScrape.data.match(regex);
+  const idRequestString = allIds.toString();
   const libgenApiResponse = await axios.get(
-    `http://libgen.is/json.php?ids=${idRequestString}&lg_topic=libgen&fields=title,author,year,extension,md5,edition,pages,language,filesize,coverurl`,
-  )
+    `http://libgen.is/json.php?ids=${idRequestString}&lg_topic=libgen&fields=title,author,year,extension,md5,edition,pages,language,filesize,coverurl`
+  );
   const response = {
     statusCode: 200,
     headers: {
-      'Access-Control-Allow-Origin': '*', // Required for CORS support to work
+      "Access-Control-Allow-Origin": "*", // Required for CORS support to work
     },
     body: JSON.stringify(libgenApiResponse),
-  }
-  return response
-}
+  };
+  return response;
+};
 ```
 
 In this code, I'm simply taking the response that we generated above and returning it in the API response from the Lambda! In order to query this, you must POST to the endpoint with a "search" parameter. Then it will respond after a few seconds with the LibGen API response and you can do with that whatever you'd like.
