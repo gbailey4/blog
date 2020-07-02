@@ -1,0 +1,25 @@
+label {
+  font-size: 1.25rem;
+}
+
+.formInput {
+  width: 100%;
+  padding: 10px 15px;
+  border: 2px solid #696969;
+  border-radius: 4px;
+}
+
+.textareaFormInput {
+  height: 6em;
+}
+
+button {
+  transition-duration: 0.4s;
+  font-size: 1.25rem;
+  font-weight: 600;
+}
+
+button:hover {
+  background-color: #9f7aea;
+  cursor: pointer;
+}

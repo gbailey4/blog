@@ -1,20 +1,7 @@
 import React from "react";
+import "./form.css";
 
 export default function Contact() {
-  const labelStyle = { fontSize: "1.25rem" };
-  const formInputStyle = {
-    width: "100%",
-    padding: "10px 15px",
-    border: "2px solid #696969",
-    borderRadius: "4px",
-  };
-  const textAreaStyle = {
-    height: "6em",
-  };
-  const buttonStyle = {
-    fontSize: "1.25rem",
-    fontWeight: "600",
-  };
   return (
     <form
       name="contact"
@@ -30,46 +17,28 @@ export default function Contact() {
         </label>
       </p>
       <p>
-        <label style={labelStyle}>
-          Name:{" "}
-          <input
-            type="text"
-            name="name"
-            className="formInput"
-            style={formInputStyle}
-            required
-          />
+        <label>
+          Name: <input type="text" name="name" className="formInput" required />
         </label>
       </p>
       <p>
-        <label style={labelStyle}>
+        <label>
           Email:{" "}
-          <input
-            type="email"
-            name="email"
-            className="formInput"
-            style={formInputStyle}
-            required
-          />
+          <input type="email" name="email" className="formInput" required />
         </label>
       </p>
       <p>
-        <label style={labelStyle}>
+        <label>
           Message:{" "}
           <textarea
             name="message"
             className="formInput textareaFormInput"
-            style={{ ...formInputStyle, ...textAreaStyle }}
             required
           ></textarea>
         </label>
       </p>
       <p>
-        <button
-          type="submit"
-          className="formInput"
-          style={{ ...formInputStyle, ...buttonStyle }}
-        >
+        <button type="submit" className="formInput">
           Get in Touch
         </button>
       </p>
