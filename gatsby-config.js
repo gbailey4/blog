@@ -1,16 +1,23 @@
 require(`dotenv`).config({
   path: `.env`,
-})
+});
 
 module.exports = {
   siteMetadata: {
-    siteTitleAlt: `Minimal Blog - Gatsby Theme`,
+    siteTitle: `Graham Bailey`,
+    siteTitleAlt: `Graham Bailey - Blog about Personal Projects and Learning`,
+    siteHeadline: `Graham Bailey - Personal Blog`,
+    siteUrl: `https://grahambailey.io`,
+    siteDescription: `Graham Bailey's Personal Blog. Experience Product Management and Marketing professional blog about technical personal projects and learnings.`,
+    siteLanguage: `en`,
+    author: `Graham Bailey`,
   },
   plugins: [
     {
       resolve: `@lekoarts/gatsby-theme-minimal-blog`,
       // See the theme's README for all available options
       options: {
+        formatString: `MMMM DD, YYYY`,
         navigation: [
           {
             title: `Blog`,
@@ -20,15 +27,19 @@ module.exports = {
             title: `About`,
             slug: `/about`,
           },
+          {
+            title: `Contact`,
+            slug: `/contact`,
+          },
         ],
         externalLinks: [
           {
             name: `Twitter`,
-            url: `https://twitter.com/lekoarts_de`,
+            url: `https://twitter.com/grahambailey`,
           },
           {
-            name: `Instagram`,
-            url: `https://www.instagram.com/lekoarts.de/`,
+            name: `LinkedIn`,
+            url: `https://www.linkedin.com/in/grahamabailey`,
           },
         ],
       },
@@ -43,9 +54,9 @@ module.exports = {
     {
       resolve: `gatsby-plugin-manifest`,
       options: {
-        name: `minimal-blog - @lekoarts/gatsby-theme-minimal-blog`,
-        short_name: `minimal-blog`,
-        description: `Typography driven, feature-rich blogging theme with minimal aesthetics. Includes tags/categories support and extensive features for code blocks such as live preview, line numbers, and code highlighting.`,
+        name: `Graham Bailey - Personal Blog`,
+        short_name: `Graham Bailey`,
+        description: `Personal blog for Graham Bailey. I'm an experienced Product Management and Marketing professional blogging about personal projects and learnings.`,
         start_url: `/`,
         background_color: `#fff`,
         theme_color: `#6B46C1`,
@@ -67,4 +78,4 @@ module.exports = {
     `gatsby-plugin-offline`,
     `gatsby-plugin-netlify`,
   ],
-}
+};
